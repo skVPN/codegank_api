@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>一路社区小工具</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            resize: vertical;
+        }
+        input[type="submit"] {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+	.background-color-1 {
+  background-color: mistyrose;
+}
+
+.background-color-2 {
+  background-color: aliceblue;
+}
+
+.background-color-3 {
+  background-color: honeydew;
+}
+        input[type="file"] {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clipboard</h1>
+        <div class="card">
+            <div class="card-body">
+                {% for item in clipboard %}
+		<p class="background-color-{{ loop.index % 3 }}" >[{{ item.time }}] {{ item.ip }}: <br>{{ item.text }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <h1>File List</h1>
+        <div class="card">
+            <div class="card-body">
+                {% for item in files %}
+                    <p>[{{ item.time }}] {{ item.ip }}: {{ item.filename }},<a href="{{ url_for('download_file', filename=item.filename) }}">下载</a></p>
+                {% endfor %}
+            </div>
+        </div>
+        <h1>提交文本到 /clipboard</h1>
+        <form action="/clipboard" method="post">
+            <div class="form-group">
+                <textarea class="form-control" name="text" rows="10" cols="100"></textarea>
+            </div>
+            <input type="hidden" id="date" name="date" value="{{ ct }}">
+            <button type="submit" class="btn btn-primary">提交文本</button>
+        </form>
+        <h1>获取 Clash 配置 URL</h1>
+        <form action="/generate_clash_config" method="get">
+            <div class="form-group">
+                <textarea class="form-control" name="config" rows="1" cols="100"></textarea>
+            </div>
+            <input type="hidden" id="date" name="date" value="{{ ct }}">
+            <button type="submit" class="btn btn-primary">提交 Clash 参数</button>
+        </form>
+        <h1>提交文件到 /files</h1>
+        <form action="/files" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" class="form-control-file" name="file">
+            </div>
+            <input type="hidden" id="date" name="date" value="{{ ct }}">
+            <button type="submit" class="btn btn-primary">提交文件</button>
+        </form>
+    </div>
+</body>
+</html>
